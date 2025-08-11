@@ -13,7 +13,8 @@ define('DB_NAME', 'garena_db');
 
 // Cấu hình đường dẫn
 define('ROOT_PATH', dirname(__DIR__));
-define('BASE_URL', '/Garena');
+// Đặt BASE_URL thành rỗng để sử dụng đường dẫn tương đối từ gốc
+define('BASE_URL', '');
 
 // Cấu hình session
 session_start();
@@ -40,7 +41,7 @@ function getCurrentUser()
     if (isset($_SESSION['user_id'])) {
         // Truy vấn thông tin người dùng từ cơ sở dữ liệu
         $conn = connectDB();
-        $stmt = $conn->prepare("SELECT id, username, email, created_at FROM users WHERE id = ?");
+        $stmt = $conn->prepare("SELECT id, username, email, role, created_at FROM users WHERE id = ?");
         $stmt->bind_param("i", $_SESSION['user_id']);
         $stmt->execute();
         $result = $stmt->get_result();

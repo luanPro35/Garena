@@ -1,18 +1,22 @@
+<?php require_once __DIR__ . '/../../backend/config.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nạp Thẻ - Cổng thanh toán Garena</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/frontend/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script>
+        const BASE_URL = "<?php echo BASE_URL; ?>";
+    </script>
 </head>
 <body>
     <header>
         <div class="container">
             <div class="logo">
-                <a href="/">
-                    <img src="img/garena-logo.png" alt="Garena">
+                <a href="<?php echo BASE_URL; ?>/">
+                    <img src="<?php echo BASE_URL; ?>/frontend/img/garena-logo.png" alt="Garena">
                 </a>
             </div>
             <div class="user-menu">
@@ -31,7 +35,7 @@
             <h2>Đăng nhập</h2>
             <div class="login-options">
                 <a href="#" class="login-option" id="garena-login-btn">
-                    <img src="img/garena.jpg" alt="Garena">
+                    <img src="<?php echo BASE_URL; ?>/frontend/img/garena.jpg" alt="Garena">
                     <span>Garena</span>
                 </a>
                 <a href="#" class="login-option facebook" id="facebook-login-btn">

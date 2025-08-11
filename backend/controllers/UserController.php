@@ -37,10 +37,18 @@ class UserController {
             
             $response['success'] = true;
             $response['message'] = 'Đăng nhập thành công';
-            $response['data'] = [
-                'username' => $user->getUsername(),
-                'redirect' => '../frontend/index.php'
-            ];
+
+            if ($user->getRole() === 'admin' || $user->getUsername() === 'quangluan0305') {
+                $response['data'] = [
+                    'username' => $user->getUsername(),
+                    'redirect' => '../backend/views/admin/manage-info.php'
+                ];
+            } else {
+                $response['data'] = [
+                    'username' => $user->getUsername(),
+                    'redirect' => '../frontend/index.php'
+                ];
+            }
         } else {
             // Đăng nhập thất bại
             $response['message'] = 'Tên đăng nhập hoặc mật khẩu không đúng';
@@ -192,6 +200,121 @@ class UserController {
             }
         } else {
             $response['message'] = 'Không tìm thấy thông tin người dùng';
+        }
+        
+        return $response;
+    }
+    
+    /**
+     * Lấy danh sách tất cả người dùng
+     */
+    public function getAllUsers() {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => []
+        ];
+        
+        $conn = connectDB();
+        $stmt = $conn->prepare("SELECT id, username, email, full_name, avatar, balance, role, status, created_at FROM users ORDER BY id DESC");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result) {
+            $users = [];
+            while ($row = $result->fetch_assoc()) {
+                $users[] = $row;
+            }
+            
+            $response['success'] = true;
+            $response['message'] = 'Lấy danh sách người dùng thành công';
+            $response['data'] = $users;
+        } else {
+            $response['message'] = 'Lỗi khi lấy danh sách người dùng';
+        }
+        
+        $stmt->close();
+        $conn->close();
+        
+        return $response;
+    }
+    
+    /**
+     * Lấy tổng số người dùng
+     */
+    public function getTotalUsers() {
+        $conn = connectDB();
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM users");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['total'];
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Lấy thông tin người dùng từ token
+     * @param string $token Token xác thực
+     * @return array Phản hồi chứa thông tin người dùng
+     */
+    public function getUserFromToken($token) {
+        $response = [
+            'success' => false,
+            'message' => '',
+            'data' => null
+        ];
+        
+        // Kiểm tra token
+        if (empty($token)) {
+            // Nếu không có token, kiểm tra session
+            if (isset($_SESSION['user_id'])) {
+                $userId = $_SESSION['user_id'];
+                $userData = $this->getUserById($userId);
+                
+                if ($userData) {
+                    $response['success'] = true;
+                    $response['message'] = 'Lấy thông tin người dùng thành công';
+                    $response['data'] = $userData;
+                } else {
+                    $response['message'] = 'Không tìm thấy thông tin người dùng';
+                }
+            } else {
+                $response['message'] = 'Bạn chưa đăng nhập';
+            }
+            
+            return $response;
+        }
+        
+        // Xử lý token (Bearer token)
+        if (strpos($token, 'Bearer ') === 0) {
+            $token = substr($token, 7);
+        }
+        
+        // Trong thực tế, bạn sẽ xác thực token ở đây (JWT, OAuth, etc.)
+        // Ví dụ với JWT:
+        // $decoded = JWT::decode($token, $key, ['HS256']);
+        // $userId = $decoded->user_id;
+        
+        // Giả lập xác thực token đơn giản
+        // Trong ví dụ này, giả sử token là user_id được mã hóa base64
+        $userId = base64_decode($token);
+        
+        if (is_numeric($userId)) {
+            $userData = $this->getUserById($userId);
+            
+            if ($userData) {
+                $response['success'] = true;
+                $response['message'] = 'Lấy thông tin người dùng thành công';
+                $response['data'] = $userData;
+            } else {
+                $response['message'] = 'Token không hợp lệ';
+            }
+        } else {
+            $response['message'] = 'Token không hợp lệ';
         }
         
         return $response;

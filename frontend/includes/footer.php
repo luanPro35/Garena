@@ -8,6 +8,6 @@
             <a href="#">Chính sách bảo mật</a>
         </div>
     </footer>
-    <script src="../js/main.js"></script>
+    <script src="<?php echo BASE_URL; ?>/frontend/js/main.js"></script>
 </body>
 </html>
