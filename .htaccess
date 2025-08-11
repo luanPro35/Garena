@@ -1,0 +1,27 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Set the base directory
+RewriteBase /
+
+# Redirect the root URL to frontend/index.php if it's not a file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ frontend/index.php [L]
+
+# Allow direct access to CSS, JS, and images
+RewriteRule ^css/(.*)$ frontend/css/$1 [L]
+RewriteRule ^js/(.*)$ frontend/js/$1 [L]
+RewriteRule ^images/(.*)$ frontend/images/$1 [L]
+
+# Handle frontend URLs
+RewriteRule ^games/([0-9]+)$ frontend/game_detail.php?id=$1 [L,QSA]
+RewriteRule ^search$ frontend/search.php [L,QSA]
+RewriteRule ^login$ frontend/login.php [L,QSA]
+RewriteRule ^register$ frontend/register.php [L,QSA]
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default character set
+AddDefaultCharset UTF-8

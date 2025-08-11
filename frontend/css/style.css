@@ -1,0 +1,439 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #fff;
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header .logo img {
+    height: 40px;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.user-menu a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ee4d2d;
+    color: #ee4d2d !important;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.login-btn i {
+    margin-right: 8px;
+}
+
+.slider {
+    position: relative;
+    max-width: 100%;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+main .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+main .container h2 {
+    margin-bottom: 20px;
+}
+
+.game-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.game-item {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-item a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 20px;
+}
+
+.game-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.game-item span {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+footer {
+    background-color: #f5f5f5;
+    color: #666;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 12px;
+}
+
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+footer a {
+    color: #666;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.nap-so-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-so-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.alert {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.login-form {
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #ee4d2d;
+    box-shadow: 0 0 5px rgba(238, 77, 45, 0.5);
+}
+
+.payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.payment-methods button {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.payment-methods button.active {
+    background-color: #ee4d2d;
+    color: #fff;
+    border-color: #ee4d2d;
+}
+
+.card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.price-list ul,
+.points-list ul {
+    list-style: none;
+}
+
+.price-list li,
+.points-list li {
+    margin-bottom: 10px;
+}
+
+.card-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.card-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.submit-btn {
+    background-color: #ee4d2d;
+    color: #fff;
+    padding: 15px;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.promotion {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.nap-fc-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-fc-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.login-methods {
+    margin-bottom: 20px;
+}
+
+.login-methods h3 {
+    margin-bottom: 10px;
+}
+
+.login-methods button {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.login-methods button.active {
+    background-color: #ee4d2d;
+    color: #fff;
+    border-color: #ee4d2d;
+}
+
+.nap-fcm-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-fcm-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.nap-lq-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-lq-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.nap-ff-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-ff-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.nap-ctth-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.nap-ctth-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+}
+
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.login-options {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.login-option:hover {
+    background-color: #f5f5f5;
+}
+
+.login-option img {
+    height: 30px;
+    margin-right: 15px;
+}
+
+.login-option.facebook i {
+    font-size: 30px;
+    color: #3b5998;
+    margin-right: 15px;
+}
+
+.login-option span {
+    font-size: 16px;
+}
